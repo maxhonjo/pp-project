@@ -1,26 +1,20 @@
 """
 loggerClass.py
-
-
-
+Contains the Logger class.
 """
-
-
-
 from pynput import keyboard
 from datetime import datetime
 
-
-
-    
-    
 class Logger:
 
+    """init -> only creates self.log
+    """
     def __init__(self):
 
         self.log = []
 
-
+    """on_press function for listener
+    """
     def on_press(self, key):
 
         strokeData = (str(key), datetime.now())
@@ -28,13 +22,15 @@ class Logger:
 
         print(f'added {strokeData} to log')
 
-
+    """on_release function for listener
+    """
     def on_release(self, key):
 
         if key == keyboard.Key.esc:
             return False
 
-
+    """call .start() to start logging
+    """
     def start(self):
 
         with keyboard.Listener(
@@ -43,6 +39,8 @@ class Logger:
             
             listener.join()
 
+    """call .stop() to stop logging
+    """
     def stop(self):
 
         keyboard.Listener.stop()
