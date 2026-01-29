@@ -1,6 +1,6 @@
-def main():
-    print("Hello from pp-project!")
 
 
-if __name__ == "__main__":
-    main()
+import numpy as np
+
+myNp = np.random.random_integers(0, 10, 20)
+print(myNp)
