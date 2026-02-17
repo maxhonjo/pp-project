@@ -1,13 +1,31 @@
-from class_Logger import Logger
-from class_gui import GUI
+# standard modules
+import pynput
+from pynput.keyboard import Listener
+import tkinter as tk
+
+# custom modules
+from gui import GUI
 
 
-# myLogger = Logger()
 
-# myLogger.start()
+keystrokes = []
+gui = GUI(keystrokes=keystrokes)
 
-# for key, time in myLogger.log:
-#     print(key, time)
 
-myGUI = GUI()
-myGUI.run()
+def on_press(key):
+
+    keystrokes.append(str(key))
+
+def on_release(key):
+
+    pass
+
+
+
+
+with Listener(on_press=on_press, on_release=on_release) as listener:
+    gui.run()
+
+    listener.stop()
+    listener.join()
+
