@@ -1,10 +1,7 @@
 import numpy as np
 from network import Network
-
+from network_v2 import Network2
 import matplotlib.pyplot as plt
-
-
-
 
 # LOADING DATA 
 data = np.load('mnist.npz')
@@ -46,10 +43,10 @@ def test_network(network, x_test, y_test):
 '''
 TESTING: one network
 '''
-myNetwork = Network(hiddenLayerCount=2, hiddenShape=[128, 64], x_train=x_train, y_train=y_train)
-myNetwork.descend(alpha=0.5, threshold=0.0000000001, max_steps=10000)
+# myNetwork = Network(hiddenLayerCount=2, hiddenShape=[128, 64], x_train=x_train, y_train=y_train)
+# myNetwork.descend(alpha=0.5, threshold=0.0000000001, max_steps=10000)
 
-print(test_network(myNetwork, x_test=x_test, y_test=y_test))
+# print(test_network(myNetwork, x_test=x_test, y_test=y_test))
 
 
 
@@ -104,3 +101,37 @@ TESTING: visualizing the diminishing returns of descent steps
 
 # plt.scatter(x=x, y=prop_correct_list)
 # plt.show()
+
+
+'''
+TESTING: visualizing for network v2
+'''
+myNet = Network(hiddenLayerCount=2, hiddenShape=[128, 64], x_train=x_train, y_train=y_train)
+# print('\nweights')
+# for ele in myNet.weights:
+#     print(ele.shape)
+#     # print(ele)
+
+# print('\nbiases')
+# for ele in myNet.biases:
+#     print(ele.shape)
+#     # print(ele)
+
+myNet.forward_propagate(k=x_test[0] / 255)
+
+
+myNet2 = Network2(shape=[784,128,64,10])
+z, a = myNet2.f_prop(x_input=x_test[0] / 255)
+
+
+print('\nz')
+for ele in z:
+    print(ele.shape)
+    # print(ele)
+
+print('\na')
+for ele in a:
+    print(ele.shape)
+    # print(ele)
+
+print(a)

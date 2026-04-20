@@ -47,24 +47,6 @@ class Network:
         self.weights
         self.biases
     '''
-    # def init_wb(self):
-
-    #     self.weights = []
-    #     self.biases = []
-    #     for i in range(self.hiddenLayerCount + 1):
-
-    #         m = self.neuronShape[i]       # number of neurons in previous latyer
-    #         n = self.neuronShape[i + 1]   # number of neurons in current layer
-
-    #         weightMatrix = np.random.uniform(-0.5, 0.5, (n, m))
-    #         biasVector = np.random.uniform(0, 0.5, (n, 1))
-
-    #         if i == 0:
-    #             print(weightMatrix.shape)
-            
-    #         self.weights.append(weightMatrix)
-    #         self.biases.append(biasVector)
-
     def init_wb(self):
         self.weights = []
         self.biases = []
@@ -79,7 +61,12 @@ class Network:
             self.weights.append(weightMatrix)
             self.biases.append(biasVector)
 
-    def descend(self, alpha, threshold, max_steps=50, batch_size=32):
+    '''
+    backpropagation function parameters:
+        alpha (float) -> scales the descent gradient before updating the network
+        threshold (float) -> if the means of the descent gradients is smaller
+    '''
+    def descend(self, alpha, threshold = 0.000001, max_steps=50, batch_size=32):
         dw_mean, db_mean = self.descend_one(alpha=alpha, batch_size=batch_size)
         count = 1
         while (dw_mean > threshold) or (db_mean > threshold):
@@ -129,6 +116,7 @@ class Network:
         a_all = []
 
         a = k.flatten().reshape(self.inputLayerSize, 1)
+
         for currentLayer in range(self.hiddenLayerCount + 1):
 
             z = self.weights[currentLayer].dot(a) + self.biases[currentLayer]
