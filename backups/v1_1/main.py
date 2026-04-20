@@ -1,6 +1,6 @@
 import numpy as np
 from network import Network
-from network_v2 import Network2
+from network import Network2
 import matplotlib.pyplot as plt
 
 # LOADING DATA 
