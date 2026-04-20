@@ -1,51 +1,8 @@
-
 '''
-# ---------- RESOURCES ----------
+---------- RESOURCES ----------
 
 https://cs231n.github.io/neural-networks-1/
     naming conventions
-
-# ---------- INITIALIZATION ----------
-
-Network(
-    shape = [784, 128, 64, 10]
-        list of integers
-        specify the shape of the neural network, include the output and input layer
-
-    random = True
-        initialize weights and biases randomly
-
-    TODO
-    activation_hidden = 'relu'
-    activation_output = 'sigmoid'
-
-
-    TODO
-    load = 'file.???'
-        initialize weights and biases from a file
-
-    TODO
-    type = ???
-        for non sequential integer outputs
-
-    )
-
-# ---------- FORWARD PROPAGATION ----------
-
-
-Network.f_prop(
-    x_input = np.array([0.99, 0.86, ..., 0.76, 0.50])
-        numpy array with length
-        NOTE: all training data must be normalized outside of the network in this implementation
-        NOTE: possible feature is accepting any shape input and reshaping it to the vector
-    )
-
-    returns:
-    a -> [np.arr(), np.arr(), np.arr()]
-        python list containing numpy arrays with the activations of the neurons in the network
-    z -> 
-
-
 
 '''
 
@@ -53,11 +10,11 @@ Network.f_prop(
 
 import numpy as np
 from activation_v2 import activate, af_deriv
+from utils import ONEHOT
 
 class Network2:
-    '''
-    .__init__
-    Network Initialization
+
+    '''Network Initialization
 
     parameters:
         shape       | (list) | list containing the structre of the network, include input/output
@@ -80,9 +37,9 @@ class Network2:
         if random_wb:
             self.init_random()
 
-    '''
-    .init_random
-    Initialization when random_wb = True
+
+
+    '''Random Initialization
     '''
     def init_random(self):
         self.weights = []
@@ -100,18 +57,16 @@ class Network2:
             self.weights.append(weight_matrix)
             self.biases.append(bias_vector)
 
-    '''
-    .f_prop
-    Forward Propagation Method
+
+
+    '''Forward Propagation Method
 
     parameters:
-        x_input -> MUST BE NORMALIZED BEFORE PROPAGATION
+        x_input | (np.arr) | NORMALIZED input for the network
 
     returns:
-        z, a -> 
-    
-    NOTE:
-    - input layer IS included with z, a (empty array for z)
+        z, a    | (list)   | list of numpy arrays for z and a values. 
+                           | NOTE that the input layer is included with z and a (empty for z)
     '''
     def f_prop(self, x_input):
         
@@ -135,15 +90,16 @@ class Network2:
 
         return z, a
     
-    '''
-    .b_prop
-    Backward Propagation Method
-        z, a -> results from the forward propagation method
-        y_true -> one-hot encoded expected vector NOTE must already be one-hot and (-1, 1) shape
-
-        returns:
 
 
+    '''Backward Propagation Method
+
+    parameters:
+        z, a   | (list)  | results from the forward propagation method
+        y_true | (np.arr)| one-hot encoded expected vector NOTE must already be one-hot and (-1, 1) shape
+
+    returns:
+        dw, db | (list)  | list of numpy arrays containing the ascent gradient
     '''
     def b_prop(self, z, a, y_true):
 
@@ -169,8 +125,75 @@ class Network2:
         dw.reverse()
         db.reverse()
 
-        return dw, db
+        return dw, db 
 
 
+    '''Descend
+
+    NOTE onehot encoding of the y is done here for convenience
+    '''
+    def descend(self, x_train, y_train, alpha, max_steps=50, batch_size=32, threshold=0.00001):
+        
+        grad_mean = threshold + 1
+        count = 0
+        while grad_mean > threshold:
+
+            # get a batch of data from the training data
+            batch_idxs = np.random.choice(len(x_train), batch_size, replace=False)
+            x_batch = self.x_train[batch_idxs]
+            y_batch = self.y_train[batch_idxs]
+
+            # get the optimal descent for the batch
+            dw_avg, db_avg, grad_mean = self.get_descent(x_train=x_batch, y_train=y_batch)
+            
+            # apply the descent
+            for i in range(len(self.weights)):
+                self.weights[i] -= dw_avg * alpha
+                self.biases[i]  -= db_avg * alpha
+
+            # finished descent
+            count += 1
+            if count == max_steps:
+                print(f'quit descending at {count} steps')
+                break
+
+    '''Get the Optimal Descent
+    
+    parameters:
+        x_train | (np.arr) | numpy array with each input from the dataset
+        y_train | (np.arr) | numpy array with the corresponding int
+
+    returns:
+        dw_avg    | (list)  | list containing numpy arrays with the change to the weights
+        db_avg    | (list)  | list containing numpy arrays with the change to the biases
+        grad_mean | (float) | represents the mean accross the above two
+    
+    NOTE the one hot encoding of the y_train is done at this step.
+    '''
+    def get_descent(self, x_train, y_train):
+
+        batch_size = len(x_train)
+
+        dw_sum = [np.zeros_like(w) for w in self.weights]
+        db_sum = [np.zeros_like(b) for b in self.biases]
+
+
+        for i in range(batch_size):
+
+            z, a   = self.f_prop(x_input=x_train[i])
+            dw, db = self.b_prop(z=z,
+                                 a=a,
+                                 y_true=ONEHOT(y_train[i]))
+
+            for j in range(self.layers):
+                dw_sum[j] += dw[j]
+                db_sum[j] += db[j]
+
+        dw_avg = [dw / batch_size for dw in dw_sum]
+        db_avg = [db / batch_size for db in db_sum]
+
+        grad_mean = np.abs(np.concatenate([d.flatten() for d in dw_avg + db_avg])).mean()
+
+        return dw_avg, db_avg, grad_mean
 
 

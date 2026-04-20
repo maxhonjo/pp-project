@@ -1,14 +1,8 @@
 import numpy as np
 
-def relu_derivative(z):
 
-    relu_z = np.where(z > 0, 1, 0)
-    return relu_z
+def ONEHOT(y, output_size):
+    y_true = np.zeros((output_size, 1))
+    y_true[y] = 1
 
-
-
-def print_rounded(matrix):
-
-    out = np.round(matrix, 2)
-    print(out)
-
+    return y_true
