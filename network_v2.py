@@ -68,7 +68,7 @@ class Network2:
         z, a    | (list)   | list of numpy arrays for z and a values. 
                            | NOTE that the input layer is included with z and a (empty for z)
     '''
-    def f_prop(self, x_input):
+    def f_prop(self, x_input, output_only=False):
         
         z = [np.array([])]                # input layer has no z, but adding a 0th element for index alignment with a
         a = [x_input.reshape(-1, 1)]      # a[0] is the input layer activation
@@ -87,6 +87,9 @@ class Network2:
 
             z.append(z_next)
             a.append(a_next)
+
+        if output_only:
+            return a[-1]
 
         return z, a
     
@@ -130,32 +133,33 @@ class Network2:
 
     '''Descend
 
-    NOTE onehot encoding of the y is done here for convenience
     '''
-    def descend(self, x_train, y_train, alpha, max_steps=50, batch_size=32, threshold=0.00001):
+    def descend(self, x_train, y_train, alpha, max_steps=50, batch_size=32):
         
-        grad_mean = threshold + 1
         count = 0
-        while grad_mean > threshold:
+        while count < max_steps:
 
             # get a batch of data from the training data
             batch_idxs = np.random.choice(len(x_train), batch_size, replace=False)
-            x_batch = self.x_train[batch_idxs]
-            y_batch = self.y_train[batch_idxs]
+            x_batch = x_train[batch_idxs]
+            y_batch = y_train[batch_idxs]
 
             # get the optimal descent for the batch
             dw_avg, db_avg, grad_mean = self.get_descent(x_train=x_batch, y_train=y_batch)
             
             # apply the descent
             for i in range(len(self.weights)):
-                self.weights[i] -= dw_avg * alpha
-                self.biases[i]  -= db_avg * alpha
+                self.weights[i] -= dw_avg[i] * alpha
+                self.biases[i]  -= db_avg[i] * alpha
 
-            # finished descent
+            # finished descent, just visuals
             count += 1
-            if count == max_steps:
-                print(f'quit descending at {count} steps')
-                break
+            if count % 500 == 0:
+                # print(f"step {count} | grad_mean: {grad_mean:.6f}")
+                pass
+
+
+        print(f'quit descending at {count} steps')
 
     '''Get the Optimal Descent
     
@@ -180,10 +184,12 @@ class Network2:
 
         for i in range(batch_size):
 
+            y_true = ONEHOT(y_train[i], self.output_size)
+
             z, a   = self.f_prop(x_input=x_train[i])
             dw, db = self.b_prop(z=z,
                                  a=a,
-                                 y_true=ONEHOT(y_train[i]))
+                                 y_true=y_true)
 
             for j in range(self.layers):
                 dw_sum[j] += dw[j]
