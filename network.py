@@ -25,13 +25,13 @@ class Network:
         
         # TODO add other kinds of initialization other than random values
         if random_wb:
-            self.init_random()
+            self.randomize_wb()
 
 
 
     '''Random Initialization
     '''
-    def init_random(self):
+    def randomize_wb(self):
         self.weights = []
         self.biases  = []
 
@@ -78,7 +78,7 @@ class Network:
             z.append(z_next)
             a.append(a_next)
 
-        if output_only:
+        if output_only: # this is for testing the forward propagation
             return a[-1]
 
         return z, a
