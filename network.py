@@ -192,6 +192,8 @@ class Network:
 
         dw_avg = [dw / batch_size for dw in dw_sum]
         db_avg = [db / batch_size for db in db_sum]
+        
+        # np.concatenate([d.flatten() for d in dw_avg + db_avg])
 
         grad_mean = np.abs(np.concatenate([d.flatten() for d in dw_avg + db_avg])).mean()
 
