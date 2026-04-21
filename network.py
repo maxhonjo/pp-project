@@ -41,8 +41,8 @@ class Network:
             n = self.shape[i+1]   # number of neurons in current layer
 
             scale         = np.sqrt(2.0 / m)                            # NOTE scale differs based on activation function?, better implementation?
-            weight_matrix = np.random.uniform(-scale, scale, (n, m))    # 
-            bias_vector   = np.zeros((n, 1))                            # 
+            weight_matrix = np.random.uniform(-scale, scale, (n, m))    # TODO initialize weights differently for each layer.
+            bias_vector   = np.zeros((n, 1))                            # Initializing biases at zero is the standard. 
             
             self.weights.append(weight_matrix)
             self.biases.append(bias_vector)
@@ -96,8 +96,8 @@ class Network:
     '''
     def b_prop(self, z, a, y_true):
 
-        dw = []
-        db = []
+        dw = [] #List of matrices for each layer
+        db = [] #List of vectors for each layer
 
         da = (a[-1] - y_true) * (2 / self.output_size) 
         for i in range(self.layers):
@@ -174,18 +174,17 @@ class Network:
 
         batch_size = len(x_train)
 
-        dw_sum = [np.zeros_like(w) for w in self.weights]
+        dw_sum = [np.zeros_like(w) for w in self.weights] #np.zeros_like returns an array of equal size of zeros.
         db_sum = [np.zeros_like(b) for b in self.biases]
-
+        #print(gradient_vector)
 
         for i in range(batch_size):
 
             y_true = ONEHOT(y_train[i], self.output_size)
-
             z, a   = self.f_prop(x_input=x_train[i])
             dw, db = self.b_prop(z=z,
                                  a=a,
-                                 y_true=y_true)
+                                 y_true=y_true) #self.b_prop returns a list of matrices/vectors for the weights/biases of each layer.
 
             for j in range(self.layers):
                 dw_sum[j] += dw[j]
