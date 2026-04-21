@@ -131,7 +131,7 @@ class Network:
         max_steps  | number of batches
         batch_size | batch size
     '''
-    def descend(self, x_train, y_train, alpha, max_steps=1000, batch_size=32):
+    def descend_stoc(self, x_train, y_train, alpha, max_steps=1000, batch_size=32):
         
         count = 0
         while count < max_steps:
@@ -142,7 +142,7 @@ class Network:
             y_batch = y_train[batch_idxs]
 
             # get the optimal descent for the batch
-            dw_avg, db_avg, grad_mean = self.get_descent(x_train=x_batch, y_train=y_batch)
+            dw_avg, db_avg, grad_mean = self.get_gradient(x_train=x_batch, y_train=y_batch)
             
             # apply the descent
             for i in range(len(self.weights)):
@@ -155,6 +155,30 @@ class Network:
                 # print(f"step {count} | grad_mean: {grad_mean:.6f}")
                 pass
 
+    '''Full Gradient Descent
+    
+    parameters:
+        x_train    | training data inputs that batch will randomly select from
+        y_train    | training data labels ...
+        alpha      | to calculate the step, alpha * gradient vectors
+        max_steps  | number of batches
+    '''
+    def descend_full(self, x_train, y_train, alpha, max_steps=50, threshold=32):
+
+        count = 0
+        while count < max_steps:
+
+            dw_avg, db_avg, grad_mean = self.get_gradient(x_train=x_train, y_train=y_train)
+
+            for i in range(len(self.weights)):
+                self.weights[i] -= dw_avg[i] * alpha
+                self.biases[i]  -= db_avg[i] * alpha
+
+            count += 1
+            if count % 10 == 0:
+                print(f'full descending done {count} times at alpha={alpha}')
+                pass
+             
 
 
     '''Get the Optimal Descent (given a batch)
@@ -170,7 +194,7 @@ class Network:
     
     NOTE the one hot encoding of the y_train is done at this step.
     '''
-    def get_descent(self, x_train, y_train):
+    def get_gradient(self, x_train, y_train):
 
         batch_size = len(x_train)
 
