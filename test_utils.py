@@ -1,12 +1,7 @@
 import numpy as np
 
-data = np.load('mnist.npz')
-x_train = data["x_train"] / 255 # NOTE normalizing the data here
-y_train = data["y_train"]
-x_test = data["x_test"] / 255
-y_test = data["y_test"]
 
-def test_accuracy(network, x_test=x_test, y_test=y_test, test_size=500):
+def test_accuracy(network, x_test, y_test, test_size=500):
 
     test_idxs = np.random.choice(len(x_test), test_size,replace=False)
     x_test = x_test[test_idxs]
