@@ -52,7 +52,8 @@ class Network:
     '''Forward Propagation Method
 
     parameters:
-        x_input | (np.arr) | NORMALIZED input for the network
+        x_input     | (np.arr) | NORMALIZED input for the network
+        output_only | (bool)   | if True, returns only a[-1], the activation of the output neurons.
 
     returns:
         z, a    | (list)   | list of numpy arrays for z and a values. 
