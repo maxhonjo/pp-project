@@ -1,0 +1,59 @@
+import numpy as np
+
+from network import Network
+
+
+# Default Dataset for Testing Functions
+data = np.load('datasets/mnist.npz')
+# data = np.load('datasets/fashion_mnist.npz')
+
+x_train = data["x_train"] / 255 # NOTE normalizing the data here
+y_train = data["y_train"]
+x_test = data["x_test"] / 255
+y_test = data["y_test"]
+
+def test_accuracy(network, x_test=x_test, y_test=y_test, test_size=500):
+
+    test_idxs = np.random.choice(len(x_test), test_size,replace=False)
+    x_test = x_test[test_idxs]
+    y_test = y_test[test_idxs]
+
+    results = np.zeros_like(x_test)
+
+    for i in range(len(x_test)):
+        output = network.f_prop(x_test[i], output_only=True)
+        
+        prediction = np.argmax(output)
+        true_val = y_test[i]
+    
+        if prediction == true_val:
+            results[i] = 1
+
+    accuracy = np.mean(results)
+    # print(f'network accuracy: {accuracy * 100:.2f}%')
+    return np.mean(results)
+
+def best_of(n=20, shape=[784, 128, 64, 10], xt=x_train, yt=y_train, alpha=0.5, max_steps=500):
+
+    networks = []
+    scores = np.zeros(n)
+    for i in range(n):
+        # Create one new Network
+        net = Network(shape=shape)
+
+        # Train the network 1000x
+        net.descend_stoc(x_train=x_train, y_train=y_train, alpha=alpha, max_steps=max_steps, batch_size=32)
+        
+        # Add network score to list
+        score = test_accuracy(net)
+        scores[i] = score
+
+        print(f'network {i} score: {score}')
+
+        # Add network to list
+        networks.append(net)
+
+    best_idx = np.argmax(scores)
+    return networks[best_idx]
+
+
