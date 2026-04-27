@@ -1,12 +1,18 @@
 import numpy as np
 
 '''
-USE:
+Activation & Derivative Functions
 activate(z, 'function type')
 af_deriv(z, 'function type')
 
+Parameters:
+    z | (np arr) | numpy array with pre-activatino values
+    f | (str)    | function type (lowercase string) ex. 'relu'
+
+Returns:
+    f(z) | (np arr) | numpy array of activated values.
 '''
-def activate(z, f = None):
+def activate(z, f = None): 
 
     all_functions = ['relu', 'sigmoid', 'softmax']
 
