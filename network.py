@@ -28,7 +28,6 @@ class Network:
             self.randomize_wb()
 
 
-
     '''Random Initialization
     '''
     def randomize_wb(self):
@@ -46,7 +45,6 @@ class Network:
             
             self.weights.append(weight_matrix)
             self.biases.append(bias_vector)
-
 
 
     '''Forward Propagation Method
@@ -85,7 +83,6 @@ class Network:
         return z, a
     
 
-
     '''Backward Propagation Method
 
     parameters:
@@ -122,7 +119,6 @@ class Network:
         return dw, db 
 
 
-
     '''Stochastic Descent
     
     parameters:
@@ -156,6 +152,7 @@ class Network:
                 # print(f"step {count} | grad_mean: {grad_mean:.6f}")
                 pass
 
+
     '''Full Gradient Descent
     
     parameters:
@@ -180,7 +177,6 @@ class Network:
                 print(f'full descending done {count} times at alpha={alpha}')
                 pass
              
-
 
     '''Get the Optimal Descent (given a batch)
     
