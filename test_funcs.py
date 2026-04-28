@@ -12,6 +12,16 @@ y_train = data["y_train"]
 x_test = data["x_test"] / 255
 y_test = data["y_test"]
 
+
+'''Test Accuracy
+parameters:
+    network | (Network class) | network to test the accuracy of
+    x_test  | (np array)      | standard format set of x values for testing
+    y_test  | (np array)      | standard format set of y values for testing
+
+returns:
+    accuracy | between 0-1 proportion of test set that was correct
+'''
 def test_accuracy(network, x_test=x_test, y_test=y_test, test_size=500):
 
     test_idxs = np.random.choice(len(x_test), test_size,replace=False)
@@ -33,7 +43,16 @@ def test_accuracy(network, x_test=x_test, y_test=y_test, test_size=500):
     # print(f'network accuracy: {accuracy * 100:.2f}%')
     return np.mean(results)
 
-def best_of(n=20, shape=[784, 128, 64, 10], xt=x_train, yt=y_train, alpha=0.5, max_steps=500):
+
+'''Best of X Networks
+parameters:
+    n | (int) | number of networks to create and test
+    remaining parameters are the same as .descend_stoc(), they will be used to train the networks before comparing
+
+returns:
+    Network object with the best accuracy of the group of n (after completing .descend_stoc() described above).
+'''
+def best_of(n=20, shape=[784, 128, 64, 10], xt=x_train, yt=y_train, alpha=0.5, max_steps=500, batch_size=32):
 
     networks = []
     scores = np.zeros(n)
@@ -56,6 +75,10 @@ def best_of(n=20, shape=[784, 128, 64, 10], xt=x_train, yt=y_train, alpha=0.5, m
     best_idx = np.argmax(scores)
     return networks[best_idx]
 
+
+'''Show One
+Copied from the MNIST lab in programming class.
+'''
 def show_one(image, label=None, pred=None):
     """Display one 28x28 image."""
     plt.figure(figsize=(3, 3))
