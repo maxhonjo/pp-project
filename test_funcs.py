@@ -1,5 +1,5 @@
 import numpy as np
-
+import matplotlib.pyplot as plt
 from network import Network
 
 
@@ -56,4 +56,18 @@ def best_of(n=20, shape=[784, 128, 64, 10], xt=x_train, yt=y_train, alpha=0.5, m
     best_idx = np.argmax(scores)
     return networks[best_idx]
 
+def show_one(image, label=None, pred=None):
+    """Display one 28x28 image."""
+    plt.figure(figsize=(3, 3))
+    plt.imshow(image, cmap="gray")
 
+    if label is not None and pred is not None:
+        title = f"true = {label} | pred = {pred}"
+        plt.title(title)
+    elif label is not None:
+        plt.title(f"true = {label}")
+    elif pred is not None:
+        plt.title(f"pred = {pred}")
+
+    plt.axis("off")
+    plt.show()

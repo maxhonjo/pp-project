@@ -128,7 +128,7 @@ class Network:
         max_steps  | number of batches
         batch_size | batch size
     '''
-    def descend_stoc(self, x_train, y_train, alpha, max_steps=1000, batch_size=32):
+    def descend_stoc(self, x_train, y_train, alpha = 0.5, max_steps=1000, batch_size=32):
         
         count = 0
         while count < max_steps:
