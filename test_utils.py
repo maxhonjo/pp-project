@@ -94,3 +94,30 @@ def show_one(image, label=None, pred=None):
 
     plt.axis("off")
     plt.show()
+
+
+'''Fashion Mapping
+FASHION_MAP[y_train_idx] == 'name of clothing element'
+'''
+FASHION_MAP = {
+    0: 'T-shirt/top',
+    1: 'Trouser',
+    2: 'Pullover',
+    3: 'Dress',
+    4: 'Coat',
+    5: 'Sandal',
+    6: 'Shirt',
+    7: 'Sneaker',
+    8: 'Bag',
+    9: 'Ankle boot'
+}
+
+
+'''Counter Generator
+'''
+def make_counter():
+    n = 0
+    while True:
+        yield n
+        n += 1
+COUNTER = make_counter()
